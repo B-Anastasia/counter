@@ -1,0 +1,14 @@
+@import "../base";
+
+.counter{
+  background-color: $primary-color-light;
+  border-radius: 10px;
+  padding: 2rem 1rem;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+  .active{
+    background-color: $primary-bright;
+  }
+

@@ -1,0 +1,30 @@
+//variables
+
+$primary-color-dark: rgb(9, 47, 64);
+$primary-color-light-btn: rgb(19,149,186);
+$primary-color-dark-btn: rgb(15,91,120);
+$primary-color-light: rgb(133,57,98);
+$white: #fff;
+$primary-bright: rgba(255, 56, 34, 0.67);
+
+
+body{
+  background-color: $primary-color-dark;
+}
+
+
+//box
+.block{
+  border: 3px solid $white;
+  border-radius: 10px;
+  color: $white;
+  padding: 1rem;
+}
+
+button {
+  padding: 0;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
