@@ -17,48 +17,47 @@ type ICounterSettingsPropsType = {
 
 export const CounterSettings = (props: ICounterSettingsPropsType) => {
 
+    const {start, end, endError, setStart, error, showCount, setSettings, setEnd, startError} = props;
+
     const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.currentTarget.id === 'maxVal') {
-            props.setEnd(Number.parseInt(e.currentTarget.value));
-            return;
-        }
-        if (e.currentTarget.id === 'minVal') {
-            props.setStart(Number.parseInt(e.currentTarget.value));
-            return;
+            setEnd(Number.parseInt(e.currentTarget.value));
+        } else if (e.currentTarget.id === 'minVal') {
+            setStart(Number.parseInt(e.currentTarget.value));
         }
     }
 
-    const {start,end}=props;
 
-    const sameValue = (!(end===0 && start===0) && end === start) ;
-    const activeButton= (props.error || props.showCount ||(end===0 && start===0));
+    const sameValue = (!(end === 0 && start === 0) && end === start);
+    const activeButton = (error || showCount || (end === 0 && start === 0));
 
     return (
         <div className={'block'}>
             <div className={'block__counter'}>
                 <div className={scss.input_block}>
                     <label htmlFor="maxVal">max value:</label>
-                    <input className={props.endError || sameValue ? scss.error : scss.input}
+                    <input className={endError || sameValue ? scss.error : scss.input}
                            type="number"
                            id="maxVal"
                            name="end"
-                           value={props.end}
+                           value={end}
                            onChange={onChange}/>
                 </div>
                 <div className={scss.input_block}>
                     <label htmlFor="minVal">min value:</label>
-                    <input className={props.startError || sameValue ? scss.error : scss.input}
+                    <input className={startError || sameValue ? scss.error : scss.input}
                            type="number" id="minVal"
                            name="start"
-                           value={props.start}
+                           value={start}
                            onChange={onChange}/>
                 </div>
             </div>
             <div>
                 <Button active={!activeButton}
                         disabled={activeButton}
-                        onClick={props.setSettings}>
-                    set</Button>
+                        onClick={setSettings}>
+                    set
+                </Button>
             </div>
         </div>
     )

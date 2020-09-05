@@ -6,7 +6,7 @@ import styles from './CounterBlock.module.scss';
 export type ICounterBlockPropsType = {
     start: number
     end: number
-    count: number
+    count: number|null
     btn: string
     incrementFunc: () => void
     resetFunc: () => void
@@ -15,23 +15,23 @@ export type ICounterBlockPropsType = {
 }
 
 const CounterBlock = (props: ICounterBlockPropsType) => {
-    const {count, error, btn, incrementFunc, resetFunc} = props;
+    const {count, error, btn, incrementFunc, resetFunc, end,showCount,start} = props;
     const resInc = btn === 'inc';
     return (
         <div className={'block counter__box'}>
             <Counter
-                end={props.end}
-                start={props.start}
+                end={end}
+                start={start}
                 count={count}
-                showCount={props.showCount}
+                showCount={showCount}
                 error={error}
                 resInc={resInc}/>
             <div className={styles.buttons}>
-                <Button active={!(!props.showCount || !resInc)}
-                        disabled={!props.showCount || !resInc}
+                <Button active={!(!showCount || !resInc)}
+                        disabled={!showCount || !resInc}
                         onClick={incrementFunc}>inc</Button>
-                <Button active={props.showCount}
-                        disabled={!props.showCount}
+                <Button active={showCount}
+                        disabled={!showCount}
                         onClick={resetFunc}>reset</Button>
             </div>
         </div>

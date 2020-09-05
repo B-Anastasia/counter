@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.scss';
 import CounterBlock from "./CounterBlock/CounterBlock";
 import {CounterSettings} from "./CounterSettings/CounterSettings";
+import {restoreState, saveState} from "./helperWithLocalStorage";
 
 export type ButtonsType = 'inc' | 'reset' | 'set';
 
@@ -10,36 +11,41 @@ function App() {
     let [end, setEnd] = useState<number>(restoreState('end', 0));
     let [startError, setStartError] = useState<boolean>(false);
     let [endError, setEndError] = useState<boolean>(false);
-    let [count, setCount] = useState<number>(0);
+    let [count, setCount] = useState<number|null>(restoreState('count', null));
     let [btn, setBtn] = useState<ButtonsType>('inc');
-    let [showCount, setShowCount] = useState<boolean>(false);
+    let [showCount, setShowCount] = useState<boolean>(count!==null);
 
     const initialError = (end < start || (!(end === 0 && start === 0) && end === start)) ? 'Invalid value' : '';
     let [error, setError] = useState<string>(initialError);
 
     const setSettings = () => {
-        if (error) {
-            return;
+        if (!error) {
+            setCount(start)
+            setShowCount(true)
+            saveState('count',start);
         }
-        setCount(start)
-        setShowCount(true)
     }
 
     const incrementFunc = () => {
-        if (count + 1 < end) {
-            setCount(count + 1);
-            setBtn('inc');
-            return;
+        if(count!==null){
+        saveState('count',count+1);
+        switch (true){
+            case (count + 1 < end):
+                setCount(count + 1);
+                setBtn('inc');
+                break;
+            case (count+1 === end):
+                setCount(count + 1);
+                setBtn('reset');
+                break;
         }
-
-        if (count === end - 1) {
-            setCount(count + 1);
-            setBtn('reset');
         }
     }
+
     const resetFunc = () => {
         setCount(start);
         setBtn('inc');
+        saveState('count',start);
     }
 
     const checkValue = (value: number) => {
@@ -49,14 +55,13 @@ function App() {
         }
         setError('')
         return true;
-
     }
 
     const onChangeStartValue = (value: number) => {
 
         if (checkValue(value) && value <= end) {
             saveState('start', value);
-            setStart(restoreState('start', 0))
+            setStart(value)
             setError('')
             setShowCount(false)
             setStartError(false)
@@ -72,7 +77,7 @@ function App() {
 
         if (checkValue(value) && value >= start) {
             saveState('end', value);
-            setEnd(restoreState('end', 0))
+            setEnd(value)
             setError('')
             setShowCount(false)
             setStartError(false)
@@ -88,29 +93,29 @@ function App() {
     return (
         <div className={'app'}>
             <div className={'app__body container'}>
-                <CounterSettings start={start} end={end} startError={startError} endError={endError} error={!!error}
-                                 setStart={onChangeStartValue} showCount={showCount} setEnd={onChangeEndValue}
-                                 setSettings={setSettings}/>
-                <CounterBlock start={start} end={end} count={count} btn={btn} incrementFunc={incrementFunc}
-                              resetFunc={resetFunc}
-                              showCount={showCount} error={error}/>
+                <CounterSettings
+                    start={start}
+                    end={end}
+                    startError={startError}
+                    endError={endError}
+                    error={!!error}
+                    setStart={onChangeStartValue}
+                    showCount={showCount}
+                    setEnd={onChangeEndValue}
+                    setSettings={setSettings}/>
+                <CounterBlock
+                    start={start}
+                    end={end}
+                    count={count}
+                    btn={btn}
+                    incrementFunc={incrementFunc}
+                    resetFunc={resetFunc}
+                    showCount={showCount}
+                    error={error}
+                />
             </div>
         </div>
     );
 }
 
 export default App;
-
-
-// функция для сохранения объектов в память браузера (данные в этом хранилище сохраняться даже при перезагрузке компа)
-export function saveState<T>(key: string, state: T) {
-    const stateAsString2 = JSON.stringify(state);
-    localStorage.setItem(key, stateAsString2);
-}
-
-// функция для получения сохранённого объекта в памяти браузера
-export function restoreState<T>(key: string, defaultState: T) {
-    const stateAsString = localStorage.getItem(key);
-    if (stateAsString !== null) defaultState = JSON.parse(stateAsString) as T;
-    return defaultState;
-}
