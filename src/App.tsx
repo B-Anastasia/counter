@@ -14,7 +14,7 @@ function App() {
     let [btn, setBtn] = useState<ButtonsType>('inc');
     let [showCount, setShowCount] = useState<boolean>(false);
 
-    const initialError = (end < start || (!(end===0 && start===0) && end === start)) ? 'Invalid value' : '';
+    const initialError = (end < start || (!(end === 0 && start === 0) && end === start)) ? 'Invalid value' : '';
     let [error, setError] = useState<string>(initialError);
 
     const setSettings = () => {
@@ -60,11 +60,13 @@ function App() {
             setError('')
             setShowCount(false)
             setStartError(false)
+            setEndError(false)
             return;
         }
         setStart(value)
         setError('Invalid value')
         setStartError(true)
+        setEndError(true)
     }
     const onChangeEndValue = (value: number) => {
 
@@ -73,22 +75,26 @@ function App() {
             setEnd(restoreState('end', 0))
             setError('')
             setShowCount(false)
+            setStartError(false)
             setEndError(false)
             return;
         }
         setEnd(value)
         setError('Invalid value')
         setEndError(true)
-
+        setStartError(true)
     }
 
     return (
-        <div className="app">
-            <CounterSettings start={start} end={end} startError={startError} endError={endError} error={!!error}
-                             setStart={onChangeStartValue} showCount={showCount} setEnd={onChangeEndValue}
-                             setSettings={setSettings}/>
-            <CounterBlock start={start} end={end} count={count} btn={btn} incrementFunc={incrementFunc} resetFunc={resetFunc}
-                          showCount={showCount} error={error}/>
+        <div className={'app'}>
+            <div className={'app__body container'}>
+                <CounterSettings start={start} end={end} startError={startError} endError={endError} error={!!error}
+                                 setStart={onChangeStartValue} showCount={showCount} setEnd={onChangeEndValue}
+                                 setSettings={setSettings}/>
+                <CounterBlock start={start} end={end} count={count} btn={btn} incrementFunc={incrementFunc}
+                              resetFunc={resetFunc}
+                              showCount={showCount} error={error}/>
+            </div>
         </div>
     );
 }
@@ -108,17 +114,3 @@ export function restoreState<T>(key: string, defaultState: T) {
     if (stateAsString !== null) defaultState = JSON.parse(stateAsString) as T;
     return defaultState;
 }
-
-// type IInputValueType={
-//     value:string
-// }
-//
-// const InputValue=(props:IInputValueType)=>{
-//     return(
-//         <div>
-//             <label htmlFor="maxVal">max value:</label>
-//             <input type="number" id="maxVal" name="end"
-//                    min="1" max="100" value={props.value} onChange={onChangeMin}/>
-//         </div>
-//     )
-// }

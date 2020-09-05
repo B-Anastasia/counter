@@ -1,0 +1,30 @@
+@import "../base";
+
+.error {
+  color: red;
+  text-align: center;
+}
+
+.input_block {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 0 0 20px;
+
+  &:last-child {
+    margin: 0;
+  }
+
+  label {
+    display: block;
+    margin: 0 0 10px;
+    color: $gray;
+    font-size: 12px;
+    font-weight: bolder;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: .2em;
+  }
+
+  width: 100%;
+}

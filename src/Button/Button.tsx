@@ -6,14 +6,6 @@ type ButtonPropsType = DetailedHTMLProps<
     HTMLButtonElement
     > & {active: boolean};
 
-// function Button({title,onClickFunc,active}:ButtonPropsType) {
-// return(
-//     <button
-//         disabled={!active}
-//         onClick={onClickFunc}
-//         className={active? `${scss.button} ${scss.active}`:scss.button}>{title}</button>
-// )
-// }
 const Button: React.FC<ButtonPropsType> = ({active, ...props }) => {
     return <button {...props} className={active? `${scss.button} ${scss.active}`:scss.button} />;
 };

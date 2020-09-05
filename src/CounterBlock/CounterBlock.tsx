@@ -1,6 +1,7 @@
 import React from "react";
 import Counter from "../Counter";
 import Button from "../Button";
+import styles from './CounterBlock.module.scss';
 
 export type ICounterBlockPropsType = {
     start: number
@@ -12,10 +13,10 @@ export type ICounterBlockPropsType = {
     showCount: boolean
     error: string
 }
+
 const CounterBlock = (props: ICounterBlockPropsType) => {
     const {count, error, btn, incrementFunc, resetFunc} = props;
     const resInc = btn === 'inc';
-    // const resReset=btn === 'reset';
     return (
         <div className={'block counter__box'}>
             <Counter
@@ -25,7 +26,7 @@ const CounterBlock = (props: ICounterBlockPropsType) => {
                 showCount={props.showCount}
                 error={error}
                 resInc={resInc}/>
-            <div className={'block buttons'}>
+            <div className={styles.buttons}>
                 <Button active={!(!props.showCount || !resInc)}
                         disabled={!props.showCount || !resInc}
                         onClick={incrementFunc}>inc</Button>

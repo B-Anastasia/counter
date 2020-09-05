@@ -1,6 +1,6 @@
 import React, {ChangeEvent} from "react";
 import Button from "../Button";
-import scss from './counter-settings.module.scss';
+import scss from './CounterSettings.module.scss';
 
 type ICounterSettingsPropsType = {
     start: number
@@ -20,7 +20,6 @@ export const CounterSettings = (props: ICounterSettingsPropsType) => {
     const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.currentTarget.id === 'maxVal') {
             props.setEnd(Number.parseInt(e.currentTarget.value));
-            // saveState('end',Number.parseInt(e.currentTarget.value));
             return;
         }
         if (e.currentTarget.id === 'minVal') {
@@ -35,9 +34,9 @@ export const CounterSettings = (props: ICounterSettingsPropsType) => {
     const activeButton= (props.error || props.showCount ||(end===0 && start===0));
 
     return (
-        <div className={'block counter__box'}>
+        <div className={'block'}>
             <div className={'block__counter'}>
-                <div>
+                <div className={scss.input_block}>
                     <label htmlFor="maxVal">max value:</label>
                     <input className={props.endError || sameValue ? scss.error : scss.input}
                            type="number"
@@ -46,7 +45,7 @@ export const CounterSettings = (props: ICounterSettingsPropsType) => {
                            value={props.end}
                            onChange={onChange}/>
                 </div>
-                <div>
+                <div className={scss.input_block}>
                     <label htmlFor="minVal">min value:</label>
                     <input className={props.startError || sameValue ? scss.error : scss.input}
                            type="number" id="minVal"
@@ -55,7 +54,7 @@ export const CounterSettings = (props: ICounterSettingsPropsType) => {
                            onChange={onChange}/>
                 </div>
             </div>
-            <div className={'block buttons'}>
+            <div>
                 <Button active={!activeButton}
                         disabled={activeButton}
                         onClick={props.setSettings}>
