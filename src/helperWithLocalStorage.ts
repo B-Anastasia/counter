@@ -6,8 +6,8 @@ export function saveState<T>(key: string, state: T) {
 }
 
 // функция для получения сохранённого объекта в памяти браузера
-export function restoreState<T>(key: string, defaultState: T) {
+export function restoreState(key: string):number|null {
     const stateAsString = localStorage.getItem(key);
-    if (stateAsString !== null) defaultState = JSON.parse(stateAsString) as T;
-    return defaultState;
+    if (stateAsString !== null) return JSON.parse(stateAsString);
+    return null
 }

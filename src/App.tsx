@@ -1,93 +1,43 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.scss';
 import CounterBlock from "./CounterBlock/CounterBlock";
 import {CounterSettings} from "./CounterSettings/CounterSettings";
-import {restoreState, saveState} from "./helperWithLocalStorage";
-import {ButtonsType} from "./store/count-reducer";
+import {restoreState} from "./helperWithLocalStorage";
+import {IInitialStateType, setCount, setEndValue, setError, setStartValue} from "./store/count-reducer";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "./store/redux-store";
 
 function App() {
-    let [start, setStart] = useState<number>(restoreState('start', 0));
-    let [end, setEnd] = useState<number>(restoreState('end', 0));
-    let [startError, setStartError] = useState<boolean>(false);
-    let [endError, setEndError] = useState<boolean>(false);
-    let [count, setCount] = useState<number|null>(restoreState('count', null));
-    let [btn, setBtn] = useState<ButtonsType>('inc');
+const dispatch=useDispatch();
+    const {start,btn,count,endError,startError, end,error}=useSelector<AppRootStateType,IInitialStateType>(state => state.counter);
+    //
+    // let [start, setStart] = useState<number>(restoreState('start', 0));
+    // let [end, setEnd] = useState<number>(restoreState('end', 0));
+    // let [startError, setStartError] = useState<boolean>(false);
+    // let [endError, setEndError] = useState<boolean>(false);
+    // let [count, setCount] = useState<number|null>(restoreState('count', null));
+    // let [btn, setBtn] = useState<ButtonsType>('inc');
+
     let [showCount, setShowCount] = useState<boolean>(count!==null);
+        const initialError = (end < start || (!(end === 0 && start === 0) && end === start)) ? 'Invalid value' : '';
 
-    const initialError = (end < start || (!(end === 0 && start === 0) && end === start)) ? 'Invalid value' : '';
-    let [error, setError] = useState<string>(initialError);
+    useEffect(()=>{
+        const localStorageStartValue=restoreState('start');
+        (localStorageStartValue !== null) && dispatch(setStartValue(localStorageStartValue))
+        const localStorageEndValue=restoreState('end');
+        (localStorageEndValue !== null) && dispatch(setEndValue(localStorageEndValue))
+        const localStorageCount=restoreState('count');
+        (localStorageCount !== null) && dispatch(setCount(localStorageCount))
+        dispatch(setError(initialError))
+    },[])
 
-    const setSettings = () => {
-        if (!error) {
-            setCount(start)
-            setShowCount(true)
-            saveState('count',start);
-        }
-    }
 
-    const incrementFunc = () => {
-        if(count!==null){
-        saveState('count',count+1);
-        switch (true){
-            case (count + 1 < end):
-                setCount(count + 1);
-                setBtn('inc');
-                break;
-            case (count+1 === end):
-                setCount(count + 1);
-                setBtn('reset');
-                break;
-        }
-        }
-    }
+    // let [error, setError] = useState<string>(initialError);
 
-    const resetFunc = () => {
-        setCount(start);
-        setBtn('inc');
-        saveState('count',start);
-    }
 
-    const checkValue = (value: number) => {
-        if (value < 0 || value === undefined || !isFinite(value) || (value === start && value !== 0) || (value === end && value !== 0)) {
-            setError('Invalid value')
-            return false
-        }
-        setError('')
-        return true;
-    }
 
-    const onChangeStartValue = (value: number) => {
 
-        if (checkValue(value) && value <= end) {
-            saveState('start', value);
-            setStart(value)
-            setError('')
-            setShowCount(false)
-            setStartError(false)
-            setEndError(false)
-            return;
-        }
-        setStart(value)
-        setError('Invalid value')
-        setStartError(true)
-        setEndError(true)
-    }
-    const onChangeEndValue = (value: number) => {
 
-        if (checkValue(value) && value >= start) {
-            saveState('end', value);
-            setEnd(value)
-            setError('')
-            setShowCount(false)
-            setStartError(false)
-            setEndError(false)
-            return;
-        }
-        setEnd(value)
-        setError('Invalid value')
-        setEndError(true)
-        setStartError(true)
-    }
 
     return (
         <div className={'app'}>
@@ -98,17 +48,14 @@ function App() {
                     startError={startError}
                     endError={endError}
                     error={!!error}
-                    setStart={onChangeStartValue}
                     showCount={showCount}
-                    setEnd={onChangeEndValue}
-                    setSettings={setSettings}/>
+                    setShowCount={setShowCount}
+                />
                 <CounterBlock
                     start={start}
                     end={end}
                     count={count}
                     btn={btn}
-                    incrementFunc={incrementFunc}
-                    resetFunc={resetFunc}
                     showCount={showCount}
                     error={error}
                 />

@@ -1,29 +1,70 @@
-import React, {ChangeEvent} from "react";
+import React, {ChangeEvent, useEffect} from "react";
 import Button from "../Button";
 import scss from './CounterSettings.module.scss';
+import {
+    changeValueWithError,
+    changeValueWithoutError,
+    setCount,
+    setEndValue,
+    setStartValue
+} from "../store/count-reducer";
+import {useDispatch} from "react-redux";
+import {saveState} from "../helperWithLocalStorage";
 
 type ICounterSettingsPropsType = {
     start: number
     end: number
-    setStart: (val: number) => void
-    setEnd: (val: number) => void
-    setSettings: () => void
     showCount: boolean
     error: boolean
     startError: boolean
     endError: boolean
+    setShowCount: (value: boolean) => void
 }
 
 
 export const CounterSettings = (props: ICounterSettingsPropsType) => {
 
-    const {start, end, endError, setStart, error, showCount, setSettings, setEnd, startError} = props;
+    const {start, end, endError, error, showCount, startError} = props;
+    const dispatch = useDispatch();
+    useEffect(() => {
+
+    }, [])
+
+
+    const checkValue = (value: number): boolean => {
+        if (value < 0 || value === undefined || !isFinite(value) || (value === start && value !== 0) || (value === end && value !== 0)) {
+            return false
+        }
+        return true;
+    }
+
+    //где писать сохранить в локал ст
+    const setSettings = () => {
+        console.log('setting')
+       dispatch(setCount(start))
+        saveState('count',start)
+        saveState('start',start)
+        saveState('end',end)
+        //     setShowCount(true)
+        //     saveState('count',start);
+    }
 
     const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = Number.parseInt(e.currentTarget.value);
         if (e.currentTarget.id === 'maxVal') {
-            setEnd(Number.parseInt(e.currentTarget.value));
+            dispatch(setEndValue(value))
+            if (checkValue(value) && value >= start) {
+                dispatch(changeValueWithoutError())
+            } else {
+                dispatch(changeValueWithError())
+            }
         } else if (e.currentTarget.id === 'minVal') {
-            setStart(Number.parseInt(e.currentTarget.value));
+            dispatch(setStartValue(value))
+            if (checkValue(value) && value <= end) {
+                dispatch(changeValueWithoutError())
+            } else {
+                dispatch(changeValueWithError())
+            }
         }
     }
 

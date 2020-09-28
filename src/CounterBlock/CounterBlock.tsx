@@ -8,15 +8,36 @@ export type ICounterBlockPropsType = {
     end: number
     count: number|null
     btn: string
-    incrementFunc: () => void
-    resetFunc: () => void
     showCount: boolean
     error: string
 }
 
 const CounterBlock = (props: ICounterBlockPropsType) => {
-    const {count, error, btn, incrementFunc, resetFunc, end,showCount,start} = props;
+    const {count, error, btn, end,showCount,start} = props;
     const resInc = btn === 'inc';
+//count !==null && !error
+    const incrementFunc = () => {
+        // if(count!==null){
+        // saveState('count',count+1);
+        // switch (true){
+        //     case (count + 1 < end):
+        //         setCount(count + 1);
+        //         setBtn('inc');
+        //         break;
+        //     case (count+1 === end):
+        //         setCount(count + 1);
+        //         setBtn('reset');
+        //         break;
+        // }
+        // }
+    }
+
+    const resetFunc = () => {
+        // setCount(start);
+        // setBtn('inc');
+        // saveState('count',start);
+    }
+
     return (
         <div className={'block counter__box'}>
             <Counter
