@@ -3,8 +3,7 @@ import './App.scss';
 import CounterBlock from "./CounterBlock/CounterBlock";
 import {CounterSettings} from "./CounterSettings/CounterSettings";
 import {restoreState, saveState} from "./helperWithLocalStorage";
-
-export type ButtonsType = 'inc' | 'reset' | 'set';
+import {ButtonsType} from "./store/count-reducer";
 
 function App() {
     let [start, setStart] = useState<number>(restoreState('start', 0));
