@@ -5,19 +5,19 @@ type CounterType = {
     start: number
     end: number
     count: number | null
-    showCount: boolean
     error: string
-    resInc: boolean
+    btnInc: boolean
 }
 
-function Counter({start, end, count, error, resInc}: CounterType) {
+function Counter({start, end, error, count, btnInc}: CounterType) {
+
     const backgroundStyle = `block__counter ${scss.counter} `
-    const countStyle = resInc
-        ? backgroundStyle + scss.active
-        : backgroundStyle + scss.counter;
 
+    const countStyle = btnInc
+        ? backgroundStyle + scss.counter
+        : backgroundStyle + scss.active
 
-    const text = (!error && start && end && (start !== 0 && end !== 0))
+    const text = (!error && ((start === 0 && end > 0) || (start > 0 && end === 0) || (start > 0 && end > 0)))
         ? `Please enter 'set'`
         : 'Please choose the values'
 
@@ -25,19 +25,8 @@ function Counter({start, end, count, error, resInc}: CounterType) {
         error
             ? <div className={`${backgroundStyle} ${scss.active}`}>{error}</div>
             : (count !== null)
-                ? <div className={countStyle}>{count}</div>
-                : <div className={backgroundStyle}>{text}</div>
-
-        // error
-        //     ? <div className={`${backgroundStyle} ${scss.active}`}>{error}</div>
-        //     : (start === 0 && end === 0)
-        //     ? <div className={backgroundStyle}>Please choose the values</div>
-        //     : showCount
-        //         ? <div
-        //             className={countStyle}>
-        //             {count}
-        //         </div>
-        //         :<div className={backgroundStyle}>Please enter 'set'</div>
+            ? <div className={countStyle}>{count}</div>
+            : <div className={backgroundStyle}>{text}</div>
     )
 }
 

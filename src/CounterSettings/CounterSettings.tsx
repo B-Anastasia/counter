@@ -1,7 +1,9 @@
-import React, {ChangeEvent, useEffect} from "react";
+import React, {ChangeEvent} from "react";
 import Button from "../Button";
 import scss from './CounterSettings.module.scss';
 import {
+    ButtonsType,
+    changeBtn,
     changeValueWithError,
     changeValueWithoutError,
     setCount,
@@ -14,22 +16,19 @@ import {saveState} from "../helperWithLocalStorage";
 type ICounterSettingsPropsType = {
     start: number
     end: number
-    showCount: boolean
-    error: boolean
+    error: string
     startError: boolean
     endError: boolean
-    setShowCount: (value: boolean) => void
+    btn: ButtonsType
+    count: number | null
 }
 
 
 export const CounterSettings = (props: ICounterSettingsPropsType) => {
 
-    const {start, end, endError, error, showCount, startError} = props;
+    const {start, end, endError, error, btn, count, startError} = props;
+
     const dispatch = useDispatch();
-    useEffect(() => {
-
-    }, [])
-
 
     const checkValue = (value: number): boolean => {
         if (value < 0 || value === undefined || !isFinite(value) || (value === start && value !== 0) || (value === end && value !== 0)) {
@@ -38,39 +37,41 @@ export const CounterSettings = (props: ICounterSettingsPropsType) => {
         return true;
     }
 
-    //где писать сохранить в локал ст
+    //thunk????
     const setSettings = () => {
         console.log('setting')
-       dispatch(setCount(start))
-        saveState('count',start)
-        saveState('start',start)
-        saveState('end',end)
-        //     setShowCount(true)
-        //     saveState('count',start);
+        dispatch(setCount(start))
+        dispatch(changeBtn('inc'))
+        //
+        saveState('count', start)
+        saveState('start', start)
+        saveState('end', end)
     }
 
     const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+        dispatch(setCount(null))
+        dispatch(changeBtn('set'))
         const value = Number.parseInt(e.currentTarget.value);
         if (e.currentTarget.id === 'maxVal') {
             dispatch(setEndValue(value))
             if (checkValue(value) && value >= start) {
                 dispatch(changeValueWithoutError())
             } else {
-                dispatch(changeValueWithError())
+                dispatch(changeValueWithError('Invalid max value'))
             }
         } else if (e.currentTarget.id === 'minVal') {
             dispatch(setStartValue(value))
             if (checkValue(value) && value <= end) {
                 dispatch(changeValueWithoutError())
             } else {
-                dispatch(changeValueWithError())
+                dispatch(changeValueWithError('Invalid min value'))
             }
         }
     }
 
 
     const sameValue = (!(end === 0 && start === 0) && end === start);
-    const activeButton = (error || showCount || (end === 0 && start === 0));
+    const activeButton = (!error && !(end === 0 && start === 0) && !count && btn === 'set');
 
     return (
         <div className={'block'}>
@@ -94,8 +95,8 @@ export const CounterSettings = (props: ICounterSettingsPropsType) => {
                 </div>
             </div>
             <div>
-                <Button active={!activeButton}
-                        disabled={activeButton}
+                <Button active={activeButton}
+                        disabled={!activeButton}
                         onClick={setSettings}>
                     set
                 </Button>
